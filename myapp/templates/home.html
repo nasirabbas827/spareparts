@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+<h2>Welcome, {{ user.username }}!</h2>
+
+<form method="get" action="{% url 'home' %}">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" name="q" placeholder="Search spare parts by name or part number" value="{{ query }}">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </div>
+</form>
+
+<h3>Spare Parts List</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Part Number</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Action</th> 
+        </tr>
+    </thead>
+    <tbody>
+        {% for part in spare_parts %}
+            <tr>
+                <td>
+                    {% if part.image %}
+                        <img src="{{ part.image.url }}" alt="{{ part.name }}" width="50">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ part.name }}</td>
+                <td>{{ part.part_number }}</td>
+                <td>{{ part.category.name }}</td>
+                <td>{{ part.description }}</td>
+                <td>{{ part.price }}</td>
+                <td>{{ part.stock }}</td>
+                <td>
+                    <a href="{% url 'sell_spare_part' part.id %}" class="btn btn-success">Sell</a>
+                    <a href="{% url 'purchase_spare_part' part.id %}" class="btn btn-primary">Purchase</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

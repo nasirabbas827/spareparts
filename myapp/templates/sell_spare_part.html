@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Sell Spare Part{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h2 class="text-center">Sell Spare Part - {{ spare_part.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <p><strong>Name:</strong> {{ spare_part.name }}</p>
+                        <p><strong>Part Number:</strong> {{ spare_part.part_number }}</p>
+                        <p><strong>Category:</strong> {{ spare_part.category.name }}</p>
+                        <p><strong>Description:</strong> {{ spare_part.description }}</p>
+                        <p><strong>Price:</strong> {{ spare_part.price }}</p>
+                        <p><strong>Stock:</strong> {{ spare_part.stock }}</p>
+                    </div>
+                    <form method="post" action="{% url 'sell_spare_part' spare_part.id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="hidden" name="spare_part_id" value="{{ spare_part.id }}">
+                        <div class="form-group">
+                            <label for="total_price">Total Price:</label>
+                            <span id="total_price" class="form-control">0.00</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="profit">Profit:</label>
+                            <span id="profit" class="form-control">0.00</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Sell</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInput = document.getElementById('id_quantity');
+    const taxInput = document.getElementById('id_tax');
+    const salePriceInput = document.getElementById('id_selling_price');
+    const totalPriceSpan = document.getElementById('total_price');
+    const profitSpan = document.getElementById('profit');
+
+    function updateTotalPriceAndProfit() {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const tax = parseFloat(taxInput.value) || 0;
+        const salePrice = parseFloat(salePriceInput.value) || 0;
+        const totalPrice = (quantity * salePrice) + tax;
+        const profit = (quantity * (salePrice - parseFloat('{{ spare_part.price }}'))) - tax;
+        totalPriceSpan.textContent = totalPrice.toFixed(2);
+        profitSpan.textContent = profit.toFixed(2);
+    }
+
+    quantityInput.addEventListener('input', updateTotalPriceAndProfit);
+    taxInput.addEventListener('input', updateTotalPriceAndProfit);
+    salePriceInput.addEventListener('input', updateTotalPriceAndProfit);
+
+    // Update total price and profit initially
+    updateTotalPriceAndProfit();
+});
+</script>
+{% endblock content %}
