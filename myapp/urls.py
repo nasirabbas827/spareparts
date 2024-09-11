@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('sell/<int:spare_part_id>/', views.sell_spare_part, name='sell_spare_part'),  # Include spare part ID in URL
     path('purchase/<int:spare_part_id>/', views.purchase_spare_part, name='purchase_spare_part'),  # Include spare part ID in URL
+    path('sales/', views.sales_records, name='sales_records'),
+    path('purchases/', views.purchases_records, name='purchases_records'),
 ]
 
 if settings.DEBUG:
